@@ -1,10 +1,11 @@
-import {saveTask,getTasks, onGetTasks,deleteTask } from "./firebase.js";
+import {saveTask,getTask, onGetTasks,deleteTask, updateTask } from "./firebase.js";
 
 
 const taskForm= document.getElementById('task-form')
 const tasksContainer = document.getElementById("tasks-container");
+const formLogin = document.getElementById("form-login");
 
-
+console.log(formLogin);
 let editStatus = false;
 let id = "";
 
@@ -63,18 +64,34 @@ window.addEventListener("DOMContentLoaded", async (e) => {
   });
 
 
-    taskForm.addEventListener('submit', async(e) =>{
+  taskForm.addEventListener('submit', async(e) =>{
     e.preventDefault();
     const taskTitle = taskForm['task-title'].value;
     const taskDescription = taskForm['task-description'].value;
 
     //guardando en firebase
      try {
-              await saveTask(taskTitle,taskDescription);
-              taskForm.reset();
-              taskTitle.focus();
+          if(editStatus==false){
+            await saveTask(taskTitle,taskDescription);
+          }else{
+            await updateTask(id, 
+              {
+                title: taskTitle,
+                description: taskDescription
+              });
+          }
+          
+          taskForm["btn-task-form"].innerText = "Save";
+          editStatus=false;
+
+          taskForm.reset();
+          taskTitle.focus();
       } catch (error) {
         console.log(error);
       }
 
 });
+
+formLogin.addEventListener('submit', (e)=>{
+  console.log(e.data());
+})

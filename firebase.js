@@ -12,6 +12,9 @@
     getDoc,
     updateDoc,
   } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";
+
+   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.6/firebase/auth.js";
+
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -31,6 +34,7 @@
 export const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore();
+export const auth = getAuth();
 
 export const onGetTasks = (callback) =>
   onSnapshot(collection(db, "tasks"), callback);
@@ -40,4 +44,23 @@ export const saveTask = (title, description) =>
 
 export const getTasks = () => getDocs(collection(db, "tasks"));
 
+export const getTask = (id) => getDoc(doc(db, "tasks", id));
+
 export const deleteTask = (id) => deleteDoc(doc(db, "tasks", id));
+
+export const updateTask = (id, newFields) =>
+  updateDoc(doc(db, "tasks", id), newFields);
+
+
+
+export const crearUsuario = createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
